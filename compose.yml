@@ -1,0 +1,11 @@
+services:
+
+  docx2pdf:
+    image: moalhaddar/docx-to-pdf:2.1.0-12
+    init: true
+    environment:
+      - POOL_SIZE=1
+    ports:
+      - "7700:8080"
+
+
