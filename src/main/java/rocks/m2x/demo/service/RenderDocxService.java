@@ -3,7 +3,6 @@ package rocks.m2x.demo.service;
 import com.deepoove.poi.XWPFTemplate;
 import com.deepoove.poi.config.Configure;
 import com.deepoove.poi.xwpf.NiceXWPFDocument;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 import rocks.m2x.demo.config.ApplicationConfigurationProperties;
 import rocks.m2x.demo.service.customhtmlrender.NicerListRenderer;
 import rocks.m2x.demo.service.customhtmlrender.NicerListStyleType;
+import rocks.m2x.demo.service.data.Control;
 import rocks.m2x.demo.service.data.SoA;
 
 import java.io.ByteArrayOutputStream;
@@ -39,16 +39,19 @@ public class RenderDocxService {
 
     public ByteArrayOutputStream renderSoa(SoA i) throws IOException {
         ApplicationConfigurationProperties.Export exportConfig = config.getExport();
-        try (InputStream templateIs = exportConfig.getTemplatePath().getInputStream()) {
+        try (InputStream templateIs = exportConfig.getTemplate().getInputStream()) {
             i.setCreated(LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
-            AtomicInteger gn = new AtomicInteger(1);
+
+            // numbering controls by concatenating group nr and control nr
             i.getGroups().forEach(group -> {
                 AtomicInteger cn = new AtomicInteger(1);
-                group.getControls().forEach(check -> {
-                    check.setNr(gn.get() + "." + cn.get());
-                    cn.getAndIncrement();
-                });
-                gn.getAndIncrement();
+                List<Control> controls = group.getControls();
+                if (controls != null) {
+                    controls.forEach(c -> {
+                        c.setNr(group.getNr() + "." + c.getNr());
+                        cn.getAndIncrement();
+                    });
+                }
             });
 
             HtmlRenderConfig htmlRenderConfig = new HtmlRenderConfig();
@@ -61,7 +64,7 @@ public class RenderDocxService {
             HtmlRenderPolicy htmlRenderPolicy = new HtmlRenderPolicy(htmlRenderConfig);
             Configure config = Configure.builder()
                     .useSpringEL(false)
-                    .bind(htmlRenderPolicy, "application")
+                    .bind(htmlRenderPolicy, "description", "company")
                     .build();
 
             try (XWPFTemplate t = XWPFTemplate.compile(templateIs, config)) {
@@ -93,16 +96,6 @@ public class RenderDocxService {
             }
         }
     }
-
-    String getColor(int value) {
-        return switch (value) {
-            case 1 -> "616161";
-            case 2 -> "b71c1c";
-            case 3 -> "4caf50";
-            default -> "";
-        };
-    }
-
 
     void addWatermatermark(XWPFDocument document, String text) throws InvalidFormatException {
         // Kopfzeile hinzufügen

@@ -23,7 +23,7 @@ public class ApplicationConfigurationProperties {
     @Getter
     @Setter
     public static class Export {
-        Resource templatePath = new DefaultResourceLoader().getResource("classpath:template.docx");
+        Resource template = new DefaultResourceLoader().getResource("classpath:templates/template.docx");
         boolean readonly = true;
         boolean enforceUpdateFields = false;
 
