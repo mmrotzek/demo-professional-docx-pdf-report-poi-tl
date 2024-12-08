@@ -12,7 +12,6 @@ import rocks.m2x.demo.config.ApplicationConfigurationProperties;
 import rocks.m2x.demo.service.exc.PdfConversionException;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Objects;
 
 @Service
@@ -21,8 +20,8 @@ public class PdfLibreOfficeService implements ConverterService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Override
-    public ByteArrayOutputStream convert(byte[] docxData, ApplicationConfigurationProperties.PdfConversionConfig config) throws IOException, PdfConversionException {
-        Objects.requireNonNull(config.getLibreOffice(), "config.export.pdfConversion.libreOffice is required");
+    public ByteArrayOutputStream convert(byte[] docxData, ApplicationConfigurationProperties.PdfConversionConfig config) throws PdfConversionException {
+        Objects.requireNonNull(config.getLibreOffice(), "config.export.pdf-conversion.libre-office is required");
         String url = config.getLibreOffice().getUrl();
 
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -58,6 +57,8 @@ public class PdfLibreOfficeService implements ConverterService {
             } else {
                 throw new PdfConversionException("Error converting file to pdf: " + response.getStatusCode());
             }
+        } catch (Exception e) {
+            throw new PdfConversionException("Error converting file to pdf", e);
         }
     }
 }

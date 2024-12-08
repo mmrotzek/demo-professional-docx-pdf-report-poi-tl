@@ -21,7 +21,7 @@ public class DocxToPdfService {
         try {
             Objects.requireNonNull(config, "config is required");
             Objects.requireNonNull(config.getExport(), "config.export is required");
-            Objects.requireNonNull(config.getExport().getPdfConversion(), "config.export.pdfConversion is required");
+            Objects.requireNonNull(config.getExport().getPdfConversion(), "config.export.pdf-conversion is required");
 
             ApplicationConfigurationProperties.PdfConversionConfig pdfConversion = config.getExport().getPdfConversion();
             if (pdfConversion.getPdfConversion() == ApplicationConfigurationProperties.PdfConversionConfig.PdfConverter.LIBREOFFICE) {

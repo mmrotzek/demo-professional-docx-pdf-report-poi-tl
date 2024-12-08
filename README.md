@@ -124,3 +124,14 @@ Demo templates are located in the `src/main/resources/templates` folder.
 in your Azure Portal and grant the required permissions.
 
 **_Due to these requirements, implementation has not yet taken place._**
+
+To enable PDF conversion by OneDrive Graph API, set the following properties.
+
+```properties
+m2x.demo.export.pdf-conversion.pdf-conversion=graph-api
+m2x.demo.export.pdf-conversion.graph-api.tenant-id=
+m2x.demo.export.pdf-conversion.graph-api.client-id=
+m2x.demo.export.pdf-conversion.graph-api.client-secret=
+m2x.demo.export.pdf-conversion.graph-api.user-principal-name-or-id=
+```
+

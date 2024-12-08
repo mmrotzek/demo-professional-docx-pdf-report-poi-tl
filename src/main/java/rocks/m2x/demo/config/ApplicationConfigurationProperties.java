@@ -52,7 +52,13 @@ public class ApplicationConfigurationProperties {
         @Getter
         @Setter
         public static class PdfConversionGraphApiConfig {
+            String tenantId = "";
+            String clientId = "";
+            String clientSecret = "";
 
+            String userPrincipalNameOrId;
+
+            boolean deleteAfterConversion = true;
         }
     }
 
