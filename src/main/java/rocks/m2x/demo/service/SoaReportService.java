@@ -35,8 +35,8 @@ public class SoaReportService {
 
     SoA getDemoData() {
         return SoA.builder()
-                .created("2021-01-01")
-                .version("1.0")
+                .created("")
+                .version("1.1")
                 .draft(false)
                 .company("Demo Company<br/><u>m2x.rocks</u><br/>Demo Street 1<br/><br/><b>123456 Demo City</b>")
                 .groups(List.of(
