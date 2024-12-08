@@ -3,9 +3,11 @@ package rocks.m2x.demo.service;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
-import rocks.m2x.demo.service.data.Control;
-import rocks.m2x.demo.service.data.ControlGroup;
-import rocks.m2x.demo.service.data.SoA;
+import rocks.m2x.demo.service.pdf.DocxToPdfService;
+import rocks.m2x.demo.service.report.RenderDocxReportService;
+import rocks.m2x.demo.service.report.data.Control;
+import rocks.m2x.demo.service.report.data.ControlGroup;
+import rocks.m2x.demo.service.report.data.SoA;
 import rocks.m2x.demo.service.exc.InvalidConfigurationException;
 import rocks.m2x.demo.service.exc.PdfConversionException;
 
@@ -16,7 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SoaReportService {
-    final RenderDocxService renderService;
+    final RenderDocxReportService renderService;
     final DocxToPdfService docxToPdfService;
 
     public Pair<SoA, ByteArrayOutputStream> renderReport() throws IOException {

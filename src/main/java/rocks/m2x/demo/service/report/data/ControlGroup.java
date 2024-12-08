@@ -1,4 +1,4 @@
-package rocks.m2x.demo.service.data;
+package rocks.m2x.demo.service.report.data;
 
 import lombok.Builder;
 import lombok.Data;

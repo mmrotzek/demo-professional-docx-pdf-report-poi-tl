@@ -1,4 +1,4 @@
-package rocks.m2x.demo.service.customhtmlrender;
+package rocks.m2x.demo.service.report.customhtmlrender;
 
 import lombok.RequiredArgsConstructor;
 import org.ddr.poi.html.ElementRenderer;

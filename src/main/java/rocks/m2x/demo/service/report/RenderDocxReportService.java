@@ -1,4 +1,4 @@
-package rocks.m2x.demo.service;
+package rocks.m2x.demo.service.report;
 
 import com.deepoove.poi.XWPFTemplate;
 import com.deepoove.poi.config.Configure;
@@ -16,10 +16,10 @@ import org.ddr.poi.html.HtmlRenderPolicy;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STLevelSuffix;
 import org.springframework.stereotype.Service;
 import rocks.m2x.demo.config.ApplicationConfigurationProperties;
-import rocks.m2x.demo.service.customhtmlrender.NicerListRenderer;
-import rocks.m2x.demo.service.customhtmlrender.NicerListStyleType;
-import rocks.m2x.demo.service.data.Control;
-import rocks.m2x.demo.service.data.SoA;
+import rocks.m2x.demo.service.report.customhtmlrender.NicerListRenderer;
+import rocks.m2x.demo.service.report.customhtmlrender.NicerListStyleType;
+import rocks.m2x.demo.service.report.data.Control;
+import rocks.m2x.demo.service.report.data.SoA;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RenderDocxService {
+public class RenderDocxReportService {
     String DATE_FORMAT = "yyyy-MM-dd";
 
     final ApplicationConfigurationProperties config;

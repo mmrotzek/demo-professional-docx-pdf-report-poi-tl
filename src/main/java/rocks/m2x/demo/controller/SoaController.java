@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rocks.m2x.demo.service.SoaReportService;
-import rocks.m2x.demo.service.data.SoA;
+import rocks.m2x.demo.service.report.data.SoA;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;

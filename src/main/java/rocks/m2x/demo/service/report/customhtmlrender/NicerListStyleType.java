@@ -1,4 +1,4 @@
-package rocks.m2x.demo.service.customhtmlrender;
+package rocks.m2x.demo.service.report.customhtmlrender;
 
 import org.ddr.poi.html.util.ListStyleType;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;

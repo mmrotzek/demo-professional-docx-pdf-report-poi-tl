@@ -1,4 +1,5 @@
-package rocks.m2x.demo.service;
+package rocks.m2x.demo.service.pdf;
+
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -8,7 +9,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import rocks.m2x.demo.config.ApplicationConfigurationProperties;
-import rocks.m2x.demo.service.exc.InvalidConfigurationException;
 import rocks.m2x.demo.service.exc.PdfConversionException;
 
 import java.io.ByteArrayOutputStream;
@@ -17,33 +17,14 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class DocxToPdfService {
+public class PdfLibreOfficeService implements ConverterService {
     private final RestTemplate restTemplate = new RestTemplate();
-    final ApplicationConfigurationProperties config;
 
-    public ByteArrayOutputStream convertDocxToPdf(byte[] docxData) throws InvalidConfigurationException, PdfConversionException, IOException {
-        try {
-            Objects.requireNonNull(config, "config is required");
-            Objects.requireNonNull(config.getExport(), "config.export is required");
-            Objects.requireNonNull(config.getExport().getPdfConversion(), "config.export.pdfConversion is required");
+    @Override
+    public ByteArrayOutputStream convert(byte[] docxData, ApplicationConfigurationProperties.PdfConversionConfig config) throws IOException, PdfConversionException {
+        Objects.requireNonNull(config.getLibreOffice(), "config.export.pdfConversion.libreOffice is required");
+        String url = config.getLibreOffice().getUrl();
 
-            ApplicationConfigurationProperties.PdfConversionConfig pdfConversion = config.getExport().getPdfConversion();
-            if (pdfConversion.getPdfConversion() == ApplicationConfigurationProperties.PdfConversionConfig.PdfConverter.LIBREOFFICE) {
-                Objects.requireNonNull(config.getExport().getPdfConversion().getLibreOffice(), "config.export.pdfConversion.libreOffice is required");
-                return convertUsingLibreoffice(pdfConversion.getLibreOffice().getUrl(), docxData);
-            } else if (pdfConversion.getPdfConversion() == ApplicationConfigurationProperties.PdfConversionConfig.PdfConverter.GRAPH_API) {
-                throw new UnsupportedOperationException("Graph API conversion is not supported yet");
-            } else {
-                throw new InvalidConfigurationException("Unknown pdf conversion method " + pdfConversion.getPdfConversion());
-            }
-
-        } catch (NullPointerException e) {
-            throw new InvalidConfigurationException("docx2pdf conversion - Configuration is missing required properties. " + e.getMessage(), e);
-        }
-    }
-
-
-    protected ByteArrayOutputStream convertUsingLibreoffice(String url, byte[] docxData) throws IOException, PdfConversionException {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             // multipart/form-data headers
             HttpHeaders headers = new HttpHeaders();
