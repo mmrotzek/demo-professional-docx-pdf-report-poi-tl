@@ -2,6 +2,7 @@ package rocks.m2x.demo.service.pdf;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PdfLibreOfficeService implements ConverterService {
     private final RestTemplate restTemplate = new RestTemplate();
 

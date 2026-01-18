@@ -1,0 +1,38 @@
+{
+  "created": "2024-01-15",
+  "version": "1.0",
+  "draft": false,
+  "company": "Demo Company<br/><u>m2x.rocks</u><br/>Demo Street 1<br/><br/><b>123456 Demo City</b>",
+  "groups": [
+    {
+      "nr": "5",
+      "name": "Organizational controls",
+      "controls": [
+        {
+          "nr": "1",
+          "name": "Policies for Information Security",
+          "description": "<ul><li>Develop and maintain an information security policy aligned with organizational objectives.</li><li>Review the policy annually or upon significant changes.</li></ul>",
+          "applicable": true
+        },
+        {
+          "nr": "2",
+          "name": "Information Security Roles and Responsibilities",
+          "description": "<ul><li>Define clear roles and responsibilities for information security within the organization.</li><li>Ensure responsibilities are communicated to all relevant parties.</li></ul>",
+          "applicable": true
+        }
+      ]
+    },
+    {
+      "nr": "6",
+      "name": "People controls",
+      "controls": [
+        {
+          "nr": "1",
+          "name": "Screening",
+          "description": "<ul><li>Conduct background checks on all new hires.</li><li>Verify employment history and references.</li></ul>",
+          "applicable": true
+        }
+      ]
+    }
+  ]
+}

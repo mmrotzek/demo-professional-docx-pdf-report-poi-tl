@@ -1,0 +1,66 @@
+# Maven
+target/
+.mvn/wrapper/maven-wrapper.jar
+# Note: maven-wrapper.properties is needed for Docker build, so don't exclude it
+# .mvn/wrapper/maven-wrapper.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.cursor/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Build artifacts
+*.jar
+*.war
+*.ear
+*.class
+
+# Documentation (not needed in image)
+*.md
+!README.md
+docs/
+
+# Test files
+src/test/
+*.test
+*.spec
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Example files (optional - can be included if needed)
+example/
+
+# Bruno collection (optional - not needed in image)
+bruno/
+
+# Docker files
+Dockerfile
+docker-compose.yml
+compose.yml
+.dockerignore
+
+# CI/CD
+.github/
+
+# Plans
+.cursor/plans/

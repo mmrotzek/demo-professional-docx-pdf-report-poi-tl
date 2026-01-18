@@ -1,6 +1,7 @@
 package rocks.m2x.demo.service.pdf;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import rocks.m2x.demo.config.ApplicationConfigurationProperties;
 import rocks.m2x.demo.service.exc.InvalidConfigurationException;
@@ -12,6 +13,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DocxToPdfService {
     final ApplicationConfigurationProperties config;
     final PdfLibreOfficeService pdfLibreOfficeService;
