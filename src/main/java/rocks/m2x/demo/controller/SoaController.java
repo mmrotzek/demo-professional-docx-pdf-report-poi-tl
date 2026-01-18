@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import rocks.m2x.demo.Constants;
 import rocks.m2x.demo.service.SoaReportService;
 import rocks.m2x.demo.service.report.data.SoA;
 
@@ -29,10 +30,10 @@ public class SoaController {
 
     @GetMapping("/report")
     public ResponseEntity<Void> renderReport(@RequestParam(value = "download", defaultValue = "true") boolean download,
-                                             @RequestParam(value = "format", defaultValue = "docx") String format,
+                                             @RequestParam(value = "format", defaultValue = Constants.DEFAULT_FORMAT) String format,
                                              HttpServletResponse response) {
         try {
-            if (format.equals("docx")) {
+            if (Constants.FILE_EXT_DOCX.equals(format)) {
                 Pair<SoA, ByteArrayOutputStream> r = soaReportService.renderReport();
                 return reportResponse(r.getLeft(), r.getRight(), format, download, response);
             } else {
@@ -47,11 +48,11 @@ public class SoaController {
     }
 
     private static ResponseEntity<Void> reportResponse(SoA instance, ByteArrayOutputStream byteArrayOutputStream, String fileExt, boolean download, HttpServletResponse response) throws IOException {
-        String fileName = (instance.isDraft() ? "_DRAFT_" : "") + "SoA_" + instance.getVersion() + "." + fileExt;
-        if (fileExt.equals("pdf")) {
-            response.setContentType("application/pdf");
-        } else if (fileExt.equals("docx")) {
-            response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        String fileName = generateFileName(instance, fileExt);
+        if (Constants.FILE_EXT_PDF.equals(fileExt)) {
+            response.setContentType(Constants.CONTENT_TYPE_PDF);
+        } else if (Constants.FILE_EXT_DOCX.equals(fileExt)) {
+            response.setContentType(Constants.CONTENT_TYPE_DOCX);
         }
 
         byte[] fileContent = byteArrayOutputStream.toByteArray();
@@ -78,5 +79,18 @@ public class SoaController {
         response.flushBuffer();
 
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Generates filename according to naming convention: {PREFIX}_{BASE_NAME}_{VERSION}.{EXTENSION}
+     * PREFIX is "_DRAFT_" if draft, otherwise empty string.
+     *
+     * @param instance the SoA instance
+     * @param fileExt  the file extension (docx or pdf)
+     * @return the generated filename
+     */
+    private static String generateFileName(SoA instance, String fileExt) {
+        String prefix = instance.isDraft() ? Constants.FILE_PREFIX_DRAFT : "";
+        return prefix + Constants.FILE_BASE_NAME + "_" + instance.getVersion() + "." + fileExt;
     }
 }

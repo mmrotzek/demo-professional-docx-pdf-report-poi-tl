@@ -15,6 +15,7 @@ import org.ddr.poi.html.HtmlRenderConfig;
 import org.ddr.poi.html.HtmlRenderPolicy;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STLevelSuffix;
 import org.springframework.stereotype.Service;
+import rocks.m2x.demo.Constants;
 import rocks.m2x.demo.config.ApplicationConfigurationProperties;
 import rocks.m2x.demo.service.report.customhtmlrender.NicerListRenderer;
 import rocks.m2x.demo.service.report.customhtmlrender.NicerListStyleType;
@@ -33,14 +34,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 @Slf4j
 public class RenderDocxReportService {
-    String DATE_FORMAT = "yyyy-MM-dd";
-
     final ApplicationConfigurationProperties config;
 
     public ByteArrayOutputStream renderSoa(SoA i) throws IOException {
         ApplicationConfigurationProperties.Export exportConfig = config.getExport();
         try (InputStream templateIs = exportConfig.getTemplate().getInputStream()) {
-            i.setCreated(LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
+            i.setCreated(LocalDate.now().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT)));
 
             // numbering controls by concatenating group nr and control nr
             i.getGroups().forEach(group -> {
@@ -64,7 +63,7 @@ public class RenderDocxReportService {
             HtmlRenderPolicy htmlRenderPolicy = new HtmlRenderPolicy(htmlRenderConfig);
             Configure config = Configure.builder()
                     .useSpringEL(false)
-                    .bind(htmlRenderPolicy, "description", "company")
+                    .bind(htmlRenderPolicy, Constants.TEMPLATE_FIELD_DESCRIPTION, Constants.TEMPLATE_FIELD_COMPANY)
                     .build();
 
             try (XWPFTemplate t = XWPFTemplate.compile(templateIs, config)) {
@@ -81,7 +80,7 @@ public class RenderDocxReportService {
 
                 if (i.isDraft()) {
                     try {
-                        addWatermatermark(xwpfDocument, "!!! DRAFT !!!");
+                        addWatermatermark(xwpfDocument, Constants.WATERMARK_DRAFT);
                     } catch (InvalidFormatException e) {
                         throw new IOException(e);
                     }

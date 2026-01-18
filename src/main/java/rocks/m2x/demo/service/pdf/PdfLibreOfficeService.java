@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import rocks.m2x.demo.Constants;
 import rocks.m2x.demo.config.ApplicationConfigurationProperties;
 import rocks.m2x.demo.service.exc.PdfConversionException;
 
@@ -33,7 +34,7 @@ public class PdfLibreOfficeService implements ConverterService {
             ByteArrayResource resource = new ByteArrayResource(docxData) {
                 @Override
                 public String getFilename() {
-                    return "document.docx"; // filename of the form posted to the libreoffice api
+                    return Constants.LIBREOFFICE_UPLOAD_FILENAME;
                 }
             };
 
