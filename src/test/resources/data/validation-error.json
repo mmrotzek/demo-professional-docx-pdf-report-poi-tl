@@ -1,0 +1,30 @@
+{
+  "templateId": "invoice-template",
+  "valid": false,
+  "errors": [
+    {
+      "field": "invoiceNumber",
+      "message": "Invoice number is required",
+      "code": "REQUIRED_FIELD"
+    },
+    {
+      "field": "items",
+      "message": "At least one item is required",
+      "code": "MIN_ITEMS"
+    },
+    {
+      "field": "items[0].price",
+      "message": "Price must be a positive number",
+      "code": "INVALID_VALUE"
+    }
+  ],
+  "warnings": [
+    {
+      "field": "tax",
+      "message": "Tax amount is missing, will default to 0",
+      "code": "MISSING_OPTIONAL"
+    }
+  ],
+  "errorCount": 3,
+  "warningCount": 1
+}

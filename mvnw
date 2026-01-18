@@ -106,13 +106,17 @@ trim() {
 }
 
 # parse distributionUrl and optional distributionSha256Sum, requires .mvn/wrapper/maven-wrapper.properties
+_MVN_WRAPPER_DIR="${0%/*}"
+if [ -z "${_MVN_WRAPPER_DIR}" ] || [ "${_MVN_WRAPPER_DIR}" = "${0}" ]; then
+  _MVN_WRAPPER_DIR="."
+fi
 while IFS="=" read -r key value; do
   case "${key-}" in
   distributionUrl) distributionUrl=$(trim "${value-}") ;;
   distributionSha256Sum) distributionSha256Sum=$(trim "${value-}") ;;
   esac
-done <"${0%/*}/.mvn/wrapper/maven-wrapper.properties"
-[ -n "${distributionUrl-}" ] || die "cannot read distributionUrl property in ${0%/*}/.mvn/wrapper/maven-wrapper.properties"
+done <"${_MVN_WRAPPER_DIR}/.mvn/wrapper/maven-wrapper.properties"
+[ -n "${distributionUrl-}" ] || die "cannot read distributionUrl property in ${_MVN_WRAPPER_DIR}/.mvn/wrapper/maven-wrapper.properties"
 
 case "${distributionUrl##*/}" in
 maven-mvnd-*bin.*)
@@ -130,7 +134,7 @@ maven-mvnd-*bin.*)
   distributionUrl="${distributionUrl%-bin.*}-$distributionPlatform.zip"
   ;;
 maven-mvnd-*) MVN_CMD=mvnd.sh _MVNW_REPO_PATTERN=/maven/mvnd/ ;;
-*) MVN_CMD="mvn${0##*/mvnw}" _MVNW_REPO_PATTERN=/org/apache/maven/ ;;
+*) MVN_CMD="mvn" _MVNW_REPO_PATTERN=/org/apache/maven/ ;;
 esac
 
 # apply MVNW_REPOURL and calculate MAVEN_HOME

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "document-generator": {
+      "url": "http://localhost:8080/mcp/message",
+      "transport": "streamableHttp"
+    }
+  }
+}

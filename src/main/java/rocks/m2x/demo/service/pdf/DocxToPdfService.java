@@ -1,6 +1,7 @@
 package rocks.m2x.demo.service.pdf;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import rocks.m2x.demo.config.ApplicationConfigurationProperties;
 import rocks.m2x.demo.service.exc.InvalidConfigurationException;
@@ -12,10 +13,10 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DocxToPdfService {
     final ApplicationConfigurationProperties config;
     final PdfLibreOfficeService pdfLibreOfficeService;
-    final PdfOneDrivePersonalService pdfOneDrivePersonalService;
 
     public ByteArrayOutputStream convertDocxToPdf(byte[] docxData) throws InvalidConfigurationException, PdfConversionException, IOException {
         try {
@@ -26,8 +27,6 @@ public class DocxToPdfService {
             ApplicationConfigurationProperties.PdfConversionConfig pdfConversion = config.getExport().getPdfConversion();
             if (pdfConversion.getPdfConversion() == ApplicationConfigurationProperties.PdfConversionConfig.PdfConverter.LIBREOFFICE) {
                 return pdfLibreOfficeService.convert(docxData, config.getExport().getPdfConversion());
-            } else if (pdfConversion.getPdfConversion() == ApplicationConfigurationProperties.PdfConversionConfig.PdfConverter.GRAPH_API) {
-                return pdfOneDrivePersonalService.convert(docxData, config.getExport().getPdfConversion());
             } else {
                 throw new InvalidConfigurationException("Unknown pdf conversion method " + pdfConversion.getPdfConversion());
             }
