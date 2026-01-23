@@ -47,6 +47,20 @@ class McpHttpEndpointIntegrationTest {
         baseUrl = "http://localhost:" + port;
     }
 
+    /**
+     * Create HTTP headers with proper Accept headers for Streamable HTTP
+     */
+    private HttpHeaders createMcpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        // Streamable HTTP requires specific Accept headers
+        headers.setAccept(java.util.Arrays.asList(
+                MediaType.TEXT_EVENT_STREAM,
+                MediaType.APPLICATION_JSON
+        ));
+        return headers;
+    }
+
     @Test
     void testListTools() {
         Map<String, Object> request = new HashMap<>();
@@ -55,8 +69,7 @@ class McpHttpEndpointIntegrationTest {
         request.put("id", 1);
         request.put("params", new HashMap<>());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders headers = createMcpHeaders();
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
 
         ResponseEntity<Map> response = restTemplate.exchange(
@@ -84,8 +97,7 @@ class McpHttpEndpointIntegrationTest {
         request.put("id", 2);
         request.put("params", params);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders headers = createMcpHeaders();
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
 
         ResponseEntity<Map> response = restTemplate.exchange(
@@ -121,8 +133,7 @@ class McpHttpEndpointIntegrationTest {
         request.put("id", 3);
         request.put("params", params);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders headers = createMcpHeaders();
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
 
         ResponseEntity<Map> response = restTemplate.exchange(
@@ -156,8 +167,7 @@ class McpHttpEndpointIntegrationTest {
         request.put("id", 4);
         request.put("params", params);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders headers = createMcpHeaders();
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
 
         ResponseEntity<Map> response = restTemplate.exchange(
@@ -199,8 +209,7 @@ class McpHttpEndpointIntegrationTest {
         request.put("id", 5);
         request.put("params", params);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders headers = createMcpHeaders();
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
 
         ResponseEntity<Map> response = restTemplate.exchange(
@@ -222,8 +231,7 @@ class McpHttpEndpointIntegrationTest {
         request.put("method", "invalid_method");
         request.put("id", 99);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders headers = createMcpHeaders();
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
 
         ResponseEntity<Map> response = restTemplate.exchange(
