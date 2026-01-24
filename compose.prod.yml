@@ -1,0 +1,30 @@
+services:
+  m2x-docx2pdf:
+    image: moalhaddar/docx-to-pdf:2.1.0-12
+    init: true
+    environment:
+      - POOL_SIZE=1
+    ports:
+      - "7700:8080"
+
+  m2x-document-report-generator:
+    image: ghcr.io/mmrotzek/demo-professional-docx-pdf-report-poi-tl:${IMAGE_TAG:-latest}
+    depends_on:
+      - m2x-docx2pdf
+    environment:
+      - m2x.demo.mcp.enabled=true
+      - m2x.demo.mcp.http-enabled=true
+      - m2x.demo.mcp.http-path=/mcp/message
+      - spring.ai.mcp.server.annotation-scanner.enabled=true
+      # Override PDF conversion URL for in-cluster access to docx2pdf
+      # Inside the container, use the Docker service name and internal port.
+      - M2X_DEMO_EXPORT_PDF_CONVERSION_LIBRE_OFFICE_URL=http://m2x-docx2pdf:8080/pdf
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+

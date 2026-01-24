@@ -12,7 +12,7 @@ import org.springframework.core.io.Resource;
 public class ApplicationConfigurationProperties {
 
     CorsConfig cors = new CorsConfig();
-    Export export = new Export();
+    ExportConfig export = new ExportConfig();
 
     @Getter
     @Setter
@@ -22,25 +22,18 @@ public class ApplicationConfigurationProperties {
 
     @Getter
     @Setter
-    public static class Export {
-        Resource template = new DefaultResourceLoader().getResource("classpath:templates/template.docx");
-        boolean readonly = true;
-        boolean enforceUpdateFields = false;
-
+    public static class ExportConfig {
         PdfConversionConfig pdfConversion = new PdfConversionConfig();
     }
-
 
     @Getter
     @Setter
     public static class PdfConversionConfig {
         PdfConverter pdfConversion = PdfConverter.LIBREOFFICE;
         PdfConversionLibreOfficeConfig libreOffice = new PdfConversionLibreOfficeConfig();
-        PdfConversionGraphApiConfig graphApi = new PdfConversionGraphApiConfig();
 
        public enum PdfConverter {
-            LIBREOFFICE,
-            GRAPH_API
+            LIBREOFFICE
         }
 
         @Getter
@@ -48,19 +41,5 @@ public class ApplicationConfigurationProperties {
         public static class PdfConversionLibreOfficeConfig {
             String url = "http://localhost:7700/pdf";
         }
-
-        @Getter
-        @Setter
-        public static class PdfConversionGraphApiConfig {
-            String tenantId = "";
-            String clientId = "";
-            String clientSecret = "";
-
-            String userPrincipalNameOrId;
-
-            boolean deleteAfterConversion = true;
-        }
     }
-
-
 }

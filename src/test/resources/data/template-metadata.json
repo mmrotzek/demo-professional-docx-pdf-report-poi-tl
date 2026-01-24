@@ -1,0 +1,48 @@
+{
+  "templateId": "invoice-template",
+  "name": "Invoice Template",
+  "description": "Standard invoice template for billing customers",
+  "version": "1.0",
+  "capabilities": {
+    "formats": ["docx", "pdf"],
+    "htmlRendering": true,
+    "readonlyProtection": true,
+    "draftWatermark": true
+  },
+  "schema": {
+    "required": ["invoiceNumber", "invoiceDate", "items", "total"],
+    "properties": {
+      "invoiceNumber": {
+        "type": "string"
+      },
+      "invoiceDate": {
+        "type": "string",
+        "format": "date"
+      },
+      "customerName": {
+        "type": "string"
+      },
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "description": {"type": "string"},
+            "quantity": {"type": "number"},
+            "price": {"type": "number"},
+            "total": {"type": "number"}
+          }
+        }
+      },
+      "subtotal": {
+        "type": "number"
+      },
+      "tax": {
+        "type": "number"
+      },
+      "total": {
+        "type": "number"
+      }
+    }
+  }
+}

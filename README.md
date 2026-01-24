@@ -1,37 +1,88 @@
 # Demo: Professional template based reports with poi-tl
 
-## Intro
+This demo shows how to generate professional Word template-based reports with poi-tl, using a **Statement of Applicability** (SoA) report for ISO 27001 as an example.
 
-This demo shows, how to generate a professional, word template based, report with poi-tl.
-In this use case it generates a **Statement of Applicability** (SoA) report how it is required by ISO 27001 (Information
-security, cybersecurity and privacy protection).
+**Key Features:**
 
-> **IMPORTANT**: this is exemplary data generated with ChatGPT and is not a real world example of a SoA
+- **Dynamic Data & Templates**: Combine structured JSON data with customizable Word templates to generate professional reports
+- **MCP Server Integration**: Built-in Model Context Protocol (MCP) server enables AI agents and IDEs (like Cursor, Claude Desktop) to generate reports programmatically
+- **Test Web UI**: Interactive web interface at `/ui/reports` for testing template uploads and report generation without writing code
+- **Multiple Output Formats**: Generate reports as DOCX or PDF with a single API call
+- **Generic Report Generation**: Generate reports from any template and data structure
+- **Template Management**: Upload and manage templates dynamically
+- **Data Validation**: Validate report data against template schemas
+- **HTML Rendering**: Configurable HTML rendering for specific fields
+- **Document Options**: Read-only protection, draft watermarks, field updates
 
-For more details please read the related blog post:
-[https://m2x.rocks/poi-tl-professionelle-berichte-aus-word-templates/](https://m2x.rocks/poi-tl-professionelle-berichte-aus-word-templates/)
+> **IMPORTANT**: This uses exemplary data generated with AI/GPT tools and is not a real-world example.
 
-## Demo
+Related blog post: [https://m2x.rocks/poi-tl-professionelle-berichte-aus-word-templates/](https://m2x.rocks/poi-tl-professionelle-berichte-aus-word-templates/)
 
-To show the capabilities of poi-tl, the report can be generated based on two different templates:
+**Table of Contents:**
 
-1. in portrait orientation as text report, based on an existing word template _Geschäftsbericht (Design 
-   "Professionell")_ from Microsoft.
-2. in landscape orientation as a compact table (build be myself).
+- [Usage](#usage)
+- [Screenshots](#screenshots)
+- [Developer Documentation](#developer-documentation)
+    - [Want to try yourself?! - Out of the Box Demo](#want-to-try-yourself---out-of-the-box-demo)
+    - [Template Placeholders in Word Documents](#template-placeholders-in-word-documents)
+    - [MCP](#mcp)
 
-The report is created as DOCX, but can also be converted into a PDF using a downstream process.
-LibreOffice is used for this by default. When converting, it is not always guaranteed that the layout will be adopted
-1:1.
+## Usage
 
-Alternatively, Microsoft Office can also be used for conversion via Graph-APIThis will be absolutely identical to
-to when you press export in Word itself. But this is not (yet?) implemented
-(see [here](#microsoft-office-pdf-conversion)).
+Run the MCP server with docker compose as described below.
 
-### Screenshots
+> **Note:** this service is intended for demo and development purposes only. For production use, please adapt the configuration and security settings accordingly.
 
-#### Portrait
+1. Get the `compose.yml` file and run it:
+    ```shell
+    curl -o compose.yml -O https://raw.githubusercontent.com/mmrotzek/demo-professional-docx-pdf-report-poi-tl/refs/heads/main/compose.prod.yml
+   ```
+   ```shell
+    docker compose up -d
+    ```
+2. This starts the MCP server on port 8080 - `http://localhost:8080/mcp/message` (MCP Streamable HTTP: JSON-RPC over HTTP with optional streaming responses) - and `docx2pdf` conversion service on port 7700.
+3. You can test the report generation service using the built-in **Web UI**: [http://localhost:8080/ui/reports](http://localhost:8080/ui/reports) - a HTML interface for generating dynamic reports with template upload and JSON data input.
 
-_Word Template_ - [src/main/resources/templates/template.docx](src/main/resources/templates/template.docx)
+This application includes an MCP (Model Context Protocol) server that enables AI agents (like Claude, GPT, or Cursor IDE) to generate professional DOCX/PDF reports using custom templates and structured data.
+
+Templates are located in [src/main/resources/templates](src/main/resources/templates).
+
+### Example: Configure MCP Server for Cursor IDE
+
+_When server is running on localhost:8080_:
+
+1. **Option 1: Project-specific configuration** (recommended)
+    - Copy `.cursor/mcp.json.example` to `.cursor/mcp.json` in this project
+    - Or create `.cursor/mcp.json` with the configuration below
+
+2. **Option 2: Global configuration**
+    - Create or update `~/.cursor/mcp.json` on your system
+
+Configuration content:
+
+```json
+{
+  "mcpServers": {
+    "document-report-generator": {
+      "url": "http://localhost:8080/mcp/message",
+      "transport": "streamableHttp"
+    }
+  }
+}
+```
+
+**Important**:
+- Make sure the application is running on `localhost:8080` before connecting
+- After adding the configuration, restart Cursor IDE
+- The MCP server tools (`generate_report`, `provide_template`, `validate_data`, `list_templates`) will be available in Cursor's AI chat
+
+> **Note**: The server uses Streamable HTTP transport which is compatible with Cursor IDE.
+
+## Screenshots
+
+### Portrait
+
+_Word Template_ - [src/main/resources/templates/template.docx](src/main/resources/templates/template_soa.docx)
 
 | Front Page                                                                                                                       | Other Pages                                                                                                        |
 |----------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
@@ -47,9 +98,9 @@ _Rendered as PDF_ - Full report: [example/portrait.pdf](example/SoA_1.1_portrait
 |-----------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
 | [![template front page](example/portrait_pdf.png "Portrait Rendered as PDF Front Page")](example/portrait_pdf.png) | [![template_page](example/portrait_pdf_2.png "Portrait Rendered as PDF Other Page")](example/portrait_pdf_2.png) |
 
-#### Landscape
+### Landscape
 
-_Word Template_ - [src/main/resources/templates/template_table.docx](src/main/resources/templates/template_table.docx)
+_Word Template_ - [src/main/resources/templates/template_table.docx](src/main/resources/templates/template_soa_table.docx)
 
 | Front Page                                                                                                                          | Other Pages                                                                                                |
 |-------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
@@ -65,73 +116,128 @@ _Rendered as PDF_ - Full report: [example/landscape.pdf](example/SoA_1.0_landsca
 
 ---
 
-## Want to try yourself?!
+## Developer Documentation
 
-This application is a Spring Boot application and uses Docker.
+### Want to try yourself?! - Out of the Box Demo
 
-Thanks to [moalhaddar/docx-to-pdf](https://github.com/moalhaddar/docx-to-pdf),
-the docx to pdf conversion can be used very easily via REST-API.
+This is a Spring Boot application that uses [poi-tl](https://github.com/Sayi/poi-tl) for Word document generation and [moalhaddar/docx-to-pdf](https://github.com/moalhaddar/docx-to-pdf) for PDF conversion via REST API.
 
-[poi-tl](https://github.com/Sayi/poi-tl) makes it very easy to create Word documents, whereby templates are simply
-filled with data.
+#### Requirements
 
-### Run
+Docker is required for PDF conversion.
 
-Start with the following commands:
+#### Run
 
 ```shell
-./mvnw spring-boot:run
+docker compose up -d
 ```
 
-or run the [DemoApplication](src/main/java/rocks/m2x/demo/DemoApplication.java) class in IDEA (you will need lombok
-enabled).
+`./mvnw spring-boot:run` - or run the [DemoApplication](src/main/java/rocks/m2x/demo/DemoApplication.java) class in IDEA (requires Lombok enabled).
 
-### Usage
+#### Usage
 
-```http request
-GET http://localhost:8080/api/soa/report
-```
+**Web UI**: [http://localhost:8080/ui/reports](http://localhost:8080/ui/reports) - HTML interface for generating dynamic reports with template upload and JSON data input.
 
-- docx: [http://localhost:8080/api/soa/report](http://localhost:8080/api/soa/report)
-- pdf: [http://localhost:8080/api/soa/report?format=pdf](http://localhost:8080/api/soa/report?format=pdf)
+Templates are located in `src/main/resources/templates`.
 
-Parameters:
 
-- `format` (optional): `pdf` to convert the docx to pdf by libreoffice transformer (default).
-- `download` (optional): `false` to stream the file as response instead of downloading it.
+### Template Placeholders in Word Documents
 
-### Configuration
+Use double curly braces for placeholders:
+- Simple: `{{customerName}}`
+- Nested: `{{customer.name}}`, `{{customer.address.city}}`
+- Arrays/Loops: `{{?items}}{{description}}{{/items}}` (loops iterate over array items)
 
-The configuration is done in the `application.properties` file.
+To render HTML content, specify fields in the `htmlFields` option (comma-separated) with HTML tags: `<p>`, `<b>`, `<i>`, `<u>`, `<ul>`, `<ol>`, `<li>`, `<br/>`.
 
-For a full list of available options see
-[ApplicationConfigurationProperties](src/main/java/rocks/m2x/demo/config/ApplicationConfigurationProperties.java).
+### MCP 
 
-E.g. to change the base template, set the `m2x.demo.export.template` property to the desired template file name.
+#### Configuration
+
+MCP server settings in `application.properties`:
 
 ```properties
-# landscape as table
-m2x.demo.export.template=classpath:/templates/template_table.docx
-# portrait as text blocks
-# m2x.demo.export.template=classpath:/templates/template.docx
+m2x.demo.mcp.enabled=true
+m2x.demo.mcp.stdio-enabled=true
+m2x.demo.mcp.http-enabled=true
+m2x.demo.mcp.http-path=/mcp/message
+m2x.demo.mcp.max-template-size=10485760
+m2x.demo.mcp.template-ttl=PT1H
+
+# Spring AI MCP Server Configuration
+spring.ai.mcp.server.enabled=true
+spring.ai.mcp.server.type=SYNC
+spring.ai.mcp.server.protocol=STREAMABLE
+spring.ai.mcp.server.annotation-scanner.enabled=true
+# Streamable HTTP endpoint configuration
+spring.ai.mcp.server.streamable-http.mcp-endpoint=/mcp/message
 ```
 
-Demo templates are located in the `src/main/resources/templates` folder.
+#### MCP Tools
 
-### Microsoft Office PDF Conversion
+The MCP server provides the following tools for AI agents:
 
-**Prerequisites**: You need a Microsoft Office business tenant and admin account so that you can register an Azure App
-in your Azure Portal and grant the required permissions.
+##### `generate_report`
 
-**_Due to these requirements, implementation has not yet taken place._**
+Generate DOCX/PDF reports from structured data and templates.
 
-To enable PDF conversion by OneDrive Graph API, set the following properties.
+**Parameters:**
+- `templateId` (optional): Template identifier or path (e.g., "template_soa.docx")
+- `templateContent` (optional): Base64 encoded .docx template (for dynamic templates)
+- `reportData` (required): JSON object matching template placeholders
+- `outputFormat` (optional): "docx" or "pdf" (default: "docx")
+- `options` (optional): Report options object:
+    - `readonly` (boolean): Enable read-only protection
+    - `draft` (boolean): Add draft watermark
+    - `htmlFields` (string): Comma-separated list of fields to render as HTML
 
-```properties
-m2x.demo.export.pdf-conversion.pdf-conversion=graph-api
-m2x.demo.export.pdf-conversion.graph-api.tenant-id=
-m2x.demo.export.pdf-conversion.graph-api.client-id=
-m2x.demo.export.pdf-conversion.graph-api.client-secret=
-m2x.demo.export.pdf-conversion.graph-api.user-principal-name-or-id=
-```
+**Returns:** Base64 encoded document
 
+##### `provide_template`
+
+Upload and register a template for later use in report generation.
+
+**Parameters:**
+- `templateName` (required): Unique template identifier (will be used as templateId)
+- `templateContent` (required): Base64 encoded .docx file
+- `description` (optional): Human-readable template description
+
+**Returns:** Template registration confirmation with templateId
+
+##### `validate_data`
+
+Validate report data against template requirements before generation.
+
+**Parameters:**
+- `templateId` (required): Template identifier to validate against
+- `reportData` (required): JSON object to validate
+
+**Returns:** Validation result with any errors or warnings
+
+##### `list_templates`
+
+Get list of available templates with metadata.
+
+**Returns:** Array of template objects with id, name, description, and size information
+
+#### Resources
+
+- `template://schema/{templateId}` - JSON Schema defining expected data structure
+- `template://info/{templateId}` - Template metadata (name, description, version)
+- `sample://data/{templateId}` - Example data structure for a template
+
+
+### Security Considerations
+
+- **Apache POI Zip Security**: Configured limits to prevent zip-bomb attacks:
+  - Minimum inflate ratio: 1% (prevents highly compressed files from expanding to huge sizes)
+  - Maximum entry size: 100MB per ZIP entry
+  - Maximum text size: 50MB for extracted text
+- **Template Content Validation**: Validates .docx files have proper ZIP signature to prevent malicious files
+- **File Size Limits**: Base64 template content limited to 10MB (configurable via `m2x.demo.mcp.max-template-size`)
+- **Temporary File Cleanup**: Automatic cleanup with configurable TTL (default: 1 hour via `m2x.demo.mcp.template-ttl`)
+- **Path Traversal Protection**: 
+  - Template names validated to reject path separators, traversal sequences (`..`), and absolute paths
+  - Server-generated UUIDs used for template IDs (never user input)
+  - Canonical path validation ensures files stay within designated directories
+  - Classpath template allowlist prevents arbitrary resource loading

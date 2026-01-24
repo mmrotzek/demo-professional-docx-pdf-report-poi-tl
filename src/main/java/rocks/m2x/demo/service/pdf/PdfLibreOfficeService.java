@@ -2,20 +2,25 @@ package rocks.m2x.demo.service.pdf;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import rocks.m2x.demo.Constants;
 import rocks.m2x.demo.config.ApplicationConfigurationProperties;
 import rocks.m2x.demo.service.exc.PdfConversionException;
 
 import java.io.ByteArrayOutputStream;
+import java.net.ConnectException;
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PdfLibreOfficeService implements ConverterService {
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -33,7 +38,7 @@ public class PdfLibreOfficeService implements ConverterService {
             ByteArrayResource resource = new ByteArrayResource(docxData) {
                 @Override
                 public String getFilename() {
-                    return "document.docx"; // filename of the form posted to the libreoffice api
+                    return Constants.LIBREOFFICE_UPLOAD_FILENAME;
                 }
             };
 
@@ -57,6 +62,16 @@ public class PdfLibreOfficeService implements ConverterService {
             } else {
                 throw new PdfConversionException("Error converting file to pdf: " + response.getStatusCode());
             }
+        } catch (ResourceAccessException e) {
+            // Check if it's a connection refused error
+            Throwable cause = e.getCause();
+            if (cause instanceof ConnectException) {
+                log.error("Cannot connect to PDF conversion service at {}. Please ensure the docx2pdf service is running.", url);
+                throw new PdfConversionException(
+                    String.format("PDF conversion service is not available at %s. " +
+                        "Please start the docx2pdf service using: docker-compose up -d docx2pdf", url), e);
+            }
+            throw new PdfConversionException("Error connecting to PDF conversion service: " + e.getMessage(), e);
         } catch (Exception e) {
             throw new PdfConversionException("Error converting file to pdf", e);
         }
