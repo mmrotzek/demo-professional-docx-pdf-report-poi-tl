@@ -4,7 +4,7 @@
 ![Docker Image Version](https://img.shields.io/github/v/tag/mmrotzek/demo-professional-docx-pdf-report-poi-tl?label=version)
 ![License](https://img.shields.io/github/license/mmrotzek/demo-professional-docx-pdf-report-poi-tl)
 ![Java](https://img.shields.io/badge/Java-25-orange?logo=openjdk)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4-green?logo=springboot)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-green?logo=springboot)
 
 This demo shows how to generate professional Word template-based reports from any structured data. Transform your JSON data into polished DOCX or PDF reports using customizable Word templates.
 
@@ -43,7 +43,7 @@ Run the MCP server with docker compose as described below.
 
 1. Get the `compose.yml` file and run it:
     ```shell
-    curl -o compose.yml -O https://raw.githubusercontent.com/mmrotzek/demo-professional-docx-pdf-report-poi-tl/refs/heads/main/compose.prod.yml
+    curl -L -o compose.yml https://raw.githubusercontent.com/mmrotzek/demo-professional-docx-pdf-report-poi-tl/refs/heads/main/compose.prod.yml
    ```
    ```shell
     docker compose up -d
