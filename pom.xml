@@ -10,7 +10,7 @@
     </parent>
     <groupId>rocks.m2x</groupId>
     <artifactId>demo-professional-docx-pdf-report-poi-tl</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.2.1</version>
     <name>demo-professional-docx-pdf-report-poi-tl</name>
     <description>demo-professional-docx-pdf-report-poi-tl</description>
     <url/>

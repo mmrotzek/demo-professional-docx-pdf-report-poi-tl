@@ -1,20 +1,28 @@
-# Demo: Professional template based reports with poi-tl
+# Professional Template-Based Report Generator
 
-This demo shows how to generate professional Word template-based reports with poi-tl, using a **Statement of Applicability** (SoA) report for ISO 27001 as an example.
+![Build Status](https://github.com/mmrotzek/demo-professional-docx-pdf-report-poi-tl/actions/workflows/build-and-push-docker.yml/badge.svg)
+![Docker Image Version](https://img.shields.io/github/v/tag/mmrotzek/demo-professional-docx-pdf-report-poi-tl?label=version)
+![License](https://img.shields.io/github/license/mmrotzek/demo-professional-docx-pdf-report-poi-tl)
+![Java](https://img.shields.io/badge/Java-25-orange?logo=openjdk)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4-green?logo=springboot)
+
+This demo shows how to generate professional Word template-based reports from any structured data. Transform your JSON data into polished DOCX or PDF reports using customizable Word templates.
 
 **Key Features:**
 
+- **Generic Report Generation**: Generate reports from any template and data structure - not limited to specific use cases
 - **Dynamic Data & Templates**: Combine structured JSON data with customizable Word templates to generate professional reports
 - **MCP Server Integration**: Built-in Model Context Protocol (MCP) server enables AI agents and IDEs (like Cursor, Claude Desktop) to generate reports programmatically
 - **Test Web UI**: Interactive web interface at `/ui/reports` for testing template uploads and report generation without writing code
 - **Multiple Output Formats**: Generate reports as DOCX or PDF with a single API call
-- **Generic Report Generation**: Generate reports from any template and data structure
 - **Template Management**: Upload and manage templates dynamically
 - **Data Validation**: Validate report data against template schemas
 - **HTML Rendering**: Configurable HTML rendering for specific fields
 - **Document Options**: Read-only protection, draft watermarks, field updates
 
-> **IMPORTANT**: This uses exemplary data generated with AI/GPT tools and is not a real-world example.
+**Example Use Case**: This repository includes a **Statement of Applicability (SoA)** report for ISO 27001 as a working example, demonstrating the capabilities with a real-world scenario.
+
+> **IMPORTANT**: The example data was generated with AI/GPT tools and is not a real-world example.
 
 Related blog post: [https://m2x.rocks/poi-tl-professionelle-berichte-aus-word-templates/](https://m2x.rocks/poi-tl-professionelle-berichte-aus-word-templates/)
 
@@ -143,12 +151,15 @@ Templates are located in `src/main/resources/templates`.
 
 ### Template Placeholders in Word Documents
 
-Use double curly braces for placeholders:
-- Simple: `{{customerName}}`
-- Nested: `{{customer.name}}`, `{{customer.address.city}}`
-- Arrays/Loops: `{{?items}}{{description}}{{/items}}` (loops iterate over array items)
+Creating templates is simple - just open Microsoft Word and type placeholders using double curly braces:
 
-To render HTML content, specify fields in the `htmlFields` option (comma-separated) with HTML tags: `<p>`, `<b>`, `<i>`, `<u>`, `<ul>`, `<ol>`, `<li>`, `<br/>`.
+- **Simple values**: `{{customerName}}`, `{{price}}`, `{{date}}`
+- **Nested objects**: `{{customer.name}}`, `{{customer.address.city}}`
+- **Lists/Tables**: `{{?items}}{{description}}{{/items}}` (loops iterate over array items)
+
+**That's it!** Save as .docx and use it to generate reports.
+
+**Advanced**: To render HTML content (bold, italic, lists, etc.), specify fields in the `htmlFields` option with HTML tags: `<p>`, `<b>`, `<i>`, `<u>`, `<ul>`, `<ol>`, `<li>`, `<br/>`.
 
 ### MCP 
 
